@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import {
     connect,
     login,
-    transact
+    sendTokens
 } from '../../utils/ScatterUtils';
 
 class Home extends Component{
@@ -53,9 +53,13 @@ class Home extends Component{
 
     sendTokens = () => {
         this.setState({requestedTransaction: true});
-        transact().then(() => {
+        sendTokens({
+            toAccount :'lioninjungle',
+            amount : '1.0000 EOS',
+            memo: 'sending tokens for fun'
+        }).then(() => {
             this.setState({requestedTransaction: false});
-        });
+        }).catch(error => console.log(error.message));
     };
 
     render(){

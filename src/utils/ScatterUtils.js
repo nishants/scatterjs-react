@@ -42,7 +42,6 @@ export const login = ()=> {
         // Set expiration time for eos connection, can have more options
         const eosOptions = { expireInSeconds: 60 };
         userEosConnection = scatter.eos(network, Eos, eosOptions);
-        console.log(userAccount);
         return {
             name: userAccount.name,
             authority: userAccount.authority,
@@ -51,34 +50,18 @@ export const login = ()=> {
     });
 };
 
-export const transact = () => {
-    const requiredFields = { accounts:[network] };
-    scatter.getIdentity(requiredFields).then(() => {
-        const account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
-        const eosOptions = { expireInSeconds:60 };
-
-        // Get a proxy reference to eosjs which you can use to sign transactions with a user's Scatter.
-        const eos = scatter.eos(network, Eos, eosOptions);
-
-        // ----------------------------
-        // Now that we have an identity,
-        // an EOSIO account, and a reference
-        // to an eosjs object we can send a transaction.
-        // ----------------------------
-
-
-        // Never assume the account's permission/authority. Always take it from the returned account.
-        const transactionOptions = { authorization:[`${account.name}@${account.authority}`] };
-
-        eos.transfer(account.name, 'lioninjungle', '1.0000 EOS', 'memo', transactionOptions).then(trx => {
-            // That's it!
-            console.log(`Transaction ID: ${trx.transaction_id}`);
-        }).catch(error => {
-            console.error(error);
-        });
-
+export const sendTokens = ({toAccount, amount, memo}) => {
+    const transactionOptions = { authorization:[`${userAccount.name}@${userAccount.authority}`] };
+    return userEosConnection.transfer(
+        userAccount.name,
+        toAccount,
+        amount,
+        memo,
+        transactionOptions
+    ).then(trx => {
+        console.log(trx);
+        return trx.transaction_id;
     }).catch(error => {
-        // The user rejected this request, or doesn't have the appropriate requirements.
         console.error(error);
     });
 }
