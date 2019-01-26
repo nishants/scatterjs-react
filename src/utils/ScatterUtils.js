@@ -22,7 +22,9 @@ export const connect = appName => (new Promise((resolve, reject)=> {
                 scatter = ScatterJS.scatter;
                 resolve();
             },
-            onError = () => reject("failed to initialize with scatterjs")
+            onError = () => reject({
+                message: "Scatter not found. Please install and unlock scatter"
+            });
 
         connected ? onSuccess() : onError();
     });
@@ -31,12 +33,7 @@ export const connect = appName => (new Promise((resolve, reject)=> {
 export const transact = () => {
     const requiredFields = { accounts:[network] };
     scatter.getIdentity(requiredFields).then(() => {
-
-        // Always use the accounts you got back from Scatter. Never hardcode them even if you are prompting
-        // the user for their account name beforehand. They could still give you a different account.
         const account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
-
-        // You can pass in any additional options you want into the eosjs reference.
         const eosOptions = { expireInSeconds:60 };
 
         // Get a proxy reference to eosjs which you can use to sign transactions with a user's Scatter.

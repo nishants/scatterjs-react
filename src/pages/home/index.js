@@ -9,21 +9,51 @@ class Home extends Component{
     constructor(props){
         super(props);
         this.state = {
-            eosSettings: null
+            requestedAuth: false,
+            loggedIn: false,
+            requestedTransaction: false
         }
     }
 
-    loginUser = () => {
+    logout = () => {
+        this.setState({loggedIn: false});
+    };
+
+    login = () => {
+        this.setState({requestedAuth: true});
         connect('React-Scatter').then(() => {
-            console.log("scatter intialized");
-            transact();
+            this.setState({
+                requestedAuth: false,
+                loggedIn: true
+            });
+        }).catch(error => alert(error.message));
+    };
+
+    sendTokens = () => {
+        this.setState({requestedTransaction: true});
+        transact().then(() => {
+            this.setState({requestedTransaction: false});
         });
     };
 
     render(){
+        const {
+            requestedAuth,
+            loggedIn
+        } = this.state;
+
         return (
             <div id="homepage">
-                <a href="#" onClick={this.loginUser}>Login</a>
+                {loggedIn || <a href="#" onClick={this.login}>Login</a>}
+                {loggedIn && <>
+                    <label>{`Logged in as user : `}</label>
+                    <label><a href="#" onClick={this.logout}>Log out</a></label>
+                    <button onClick={this.sendTokens}>Send money</button>
+                </>}
+
+                <p>
+
+                </p>
             </div>
         );
     }
