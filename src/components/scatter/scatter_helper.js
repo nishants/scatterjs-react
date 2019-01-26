@@ -4,7 +4,7 @@ import Eos, { JsonRpc } from 'eosjs';
 
 import {
     parseEOS
-} from './';
+} from '../../utils';
 
 let
     scatter = null,

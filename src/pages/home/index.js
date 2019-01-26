@@ -5,7 +5,7 @@ import {
     login,
     sendTokens,
     getWallet
-} from '../../utils/ScatterUtils';
+} from '../../components/scatter/scatter_helper';
 
 class Home extends Component{
     constructor(props){
