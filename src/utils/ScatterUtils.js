@@ -3,7 +3,10 @@ import ScatterEOS from 'scatterjs-plugin-eosjs';
 import Eos from 'eosjs';
 
 // initialized when connect is inovked
-let scatter = null;
+let
+    scatter = null,
+    userAccount = null,
+    userEosConnection = null;
 
 ScatterJS.plugins( new ScatterEOS() );
 
@@ -29,6 +32,24 @@ export const connect = appName => (new Promise((resolve, reject)=> {
         connected ? onSuccess() : onError();
     });
 }));
+
+export const login = ()=> {
+    // Can have more required fields like firstname, lastname, address
+    const requiredFields = { accounts:[network] };
+    return scatter.getIdentity(requiredFields).then(() => {
+        userAccount = scatter.identity.accounts.find(x => x.blockchain === 'eos');
+
+        // Set expiration time for eos connection, can have more options
+        const eosOptions = { expireInSeconds: 60 };
+        userEosConnection = scatter.eos(network, Eos, eosOptions);
+        console.log(userAccount);
+        return {
+            name: userAccount.name,
+            authority: userAccount.authority,
+            publicKey: userAccount.publicKey
+        };
+    });
+};
 
 export const transact = () => {
     const requiredFields = { accounts:[network] };

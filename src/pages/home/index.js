@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import {
     connect,
+    login,
     transact
 } from '../../utils/ScatterUtils';
 
@@ -9,22 +10,43 @@ class Home extends Component{
     constructor(props){
         super(props);
         this.state = {
+            scatterConnected: false,
             requestedAuth: false,
+            connectingScatter: false,
+            requestedTransaction: false,
+            connectedNetworkName: null,
+
+            // account details
             loggedIn: false,
-            requestedTransaction: false
-        }
+            userAccount: {
+                name: null,
+                publicKey: null,
+                keyType: null,
+            }
+        };
     }
 
     logout = () => {
-        this.setState({loggedIn: false});
+        // this.setState({loggedIn: false});
     };
 
-    login = () => {
-        this.setState({requestedAuth: true});
+    connectWithScatter = () => {
+        this.setState({connectingScatter: true});
         connect('React-Scatter').then(() => {
             this.setState({
+                connectingScatter: false,
+                scatterConnected: true
+            });
+        }).catch(error => alert(error.message));
+    };
+
+    loginUser = () => {
+        this.setState({requestedAuth: true});
+        login().then(({name, publicKey, authority}) => {
+            this.setState({
                 requestedAuth: false,
-                loggedIn: true
+                loggedIn: true,
+                userAccount: {name, publicKey, keyType: authority,}
             });
         }).catch(error => alert(error.message));
     };
@@ -38,17 +60,40 @@ class Home extends Component{
 
     render(){
         const {
-            requestedAuth,
-            loggedIn
+            connectingScatter,
+            scatterConnected,
+
+            loggedIn,
+            userAccount
         } = this.state;
+
+        const {
+            connectWithScatter,
+            loginUser,
+            sendTokens,
+            logout
+        } = this;
 
         return (
             <div id="homepage">
-                {loggedIn || <a href="#" onClick={this.login}>Login</a>}
-                {loggedIn && <>
-                    <label>{`Logged in as user : `}</label>
-                    <label><a href="#" onClick={this.logout}>Log out</a></label>
-                    <button onClick={this.sendTokens}>Send money</button>
+                {scatterConnected || <a href="#" onClick={connectWithScatter}>Connect to scatter</a>}
+                {scatterConnected && <>
+                    <label>{`Conenected with scatter : `}</label>
+                    <br/>
+                    <label><a href="#" onClick={loginUser}>Log in</a></label>
+                    <br/>
+                    {loggedIn && <>
+                        <div>
+                            <label>Account name : </label>
+                            <span>{userAccount.name}</span>
+                        </div>
+                        <div>
+                            <label>Public key : </label>
+                            <span>[{userAccount.keyType}] {userAccount.publicKey} </span>
+                        </div>
+                    </>}
+                    <br/>
+                    <button onClick={sendTokens}>Send Tokens</button>
                 </>}
 
                 <p>
