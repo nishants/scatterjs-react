@@ -1,8 +1,8 @@
 import {all} from 'redux-saga/effects';
-// import runnerSagas from './Runner/saga';
+import scatterSaga from './components/scatter/scatter_saga';
 
 export default function* rootSaga(){
     yield all([
-        // runnerSagas()
+        scatterSaga()
     ]);
 }

@@ -1,9 +1,7 @@
 import {combineReducers}  from 'redux';
 
-// import runner from './Runner/reducer';
+import scatter from './components/scatter/scatter_reducer';
 
 export default combineReducers({
-    runner  : function (state = {}, action) {
-        return  state;
-    }
+    scatter
 });

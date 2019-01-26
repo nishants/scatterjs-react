@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
+import {connect } from 'react-redux';
 
 import {
-    connect,
+    connectScatter
+} from '../../components/scatter/scatter_actions';
+
+import {
     login,
     sendTokens,
     getWallet
@@ -34,17 +38,19 @@ class Home extends Component{
     };
 
     componentDidMount() {
-        this.connectWithScatter().then(this.loginUser);
+        // this.connectWithScatter().then(this.loginUser);
     }
 
     connectWithScatter = () => {
-        this.setState({connectingScatter: true});
-        return connect('React-Scatter').then(() => {
-            this.setState({
-                connectingScatter: false,
-                scatterConnected: true
-            });
-        }).catch(error => alert(error.message));
+        this.props.dispatch(connectScatter());
+
+        // this.setState({connectingScatter: true});
+        // return connect('React-Scatter').then(() => {
+        //     this.setState({
+        //         connectingScatter: false,
+        //         scatterConnected: true
+        //     });
+        // }).catch(error => alert(error.message));
     };
 
     loginUser = () => {
@@ -77,9 +83,10 @@ class Home extends Component{
     };
 
     render(){
+        const {connected: scatterConnected} = this.props.scatter;
+
         const {
             connectingScatter,
-            scatterConnected,
 
             loggedIn,
             userAccount,
@@ -124,4 +131,14 @@ class Home extends Component{
     }
 }
 
-export default Home;
+const mapStateToProps = ({scatter}) => {
+    return {
+        scatter
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {dispatch};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
