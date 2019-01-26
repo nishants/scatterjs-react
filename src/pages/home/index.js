@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import {
     connect,
     login,
-    sendTokens
+    sendTokens,
+    getWallet
 } from '../../utils/ScatterUtils';
 
 class Home extends Component{
@@ -22,7 +23,8 @@ class Home extends Component{
                 name: null,
                 publicKey: null,
                 keyType: null,
-            }
+            },
+            userWallet: {}
         };
     }
 
@@ -48,6 +50,7 @@ class Home extends Component{
                 loggedIn: true,
                 userAccount: {name, publicKey, keyType: authority,}
             });
+            this.getWallet();
         }).catch(error => alert(error.message));
     };
 
@@ -62,13 +65,20 @@ class Home extends Component{
         }).catch(error => console.log(error.message));
     };
 
+    getWallet = () => {
+        getWallet().then(userWallet => {
+            this.setState({userWallet})
+        }).catch(error => console.error(error));
+    };
+
     render(){
         const {
             connectingScatter,
             scatterConnected,
 
             loggedIn,
-            userAccount
+            userAccount,
+            userWallet
         } = this.state;
 
         const {
@@ -95,6 +105,7 @@ class Home extends Component{
                             <label>Public key : </label>
                             <span>[{userAccount.keyType}] {userAccount.publicKey} </span>
                         </div>
+                        <p>{JSON.stringify(userWallet)}</p>
                     </>}
                     <br/>
                     <button onClick={sendTokens}>Send Tokens</button>
