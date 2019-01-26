@@ -26,15 +26,20 @@ class Home extends Component{
             },
             userWallet: {}
         };
-    }
+
+    };
 
     logout = () => {
         // this.setState({loggedIn: false});
     };
 
+    componentDidMount() {
+        this.connectWithScatter().then(this.loginUser);
+    }
+
     connectWithScatter = () => {
         this.setState({connectingScatter: true});
-        connect('React-Scatter').then(() => {
+        return connect('React-Scatter').then(() => {
             this.setState({
                 connectingScatter: false,
                 scatterConnected: true
