@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Tester</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://cdn.jsdelivr.net/npm/eosjs@16.0.0/lib/eos.min.js"></script>
+
+
+<script src="https://cdn.scattercdn.com/file/scatter-cdn/js/latest/scatterjs-core.min.js"></script>
+<script src="https://cdn.scattercdn.com/file/scatter-cdn/js/latest/scatterjs-plugin-eosjs.min.js"></script>
+<script src="https://cdn.scattercdn.com/file/scatter-cdn/js/latest/scatterjs-plugin-lynx.min.js"></script>
+
+<!-- <script src="https://cdn.scattercdn.com/file/scatter-cdn/js/latest/scatterjs-plugin-eosjs2.min.js"></script>
+<script src="https://cdn.scattercdn.com/file/scatter-cdn/js/latest/scatterjs-plugin-web3.min.js"></script>
+<script src="https://cdn.scattercdn.com/file/scatter-cdn/js/latest/scatterjs-plugin-tron.min.js"></script>
+ -->
+<!-- 
+    <script src="https://raw.githubusercontent.com/GetScatter/scatter-js/master/bundles/scatterjs-core.min.js"></script>
+    <script src="https://raw.githubusercontent.com/GetScatter/scatter-js/master/bundles/scatterjs-plugin-eosjs.min.js"></script>
+    <script src="https://raw.githubusercontent.com/GetScatter/scatter-js/master/bundles/scatterjs-plugin-lynx.min.js"></script>
+ --></head>
+<body style="padding:20px 50px;">
+
+<h1>Scatter Basics</h1>
+
+<div id="status"></div>
+<br>
+<br>
+
+<button onclick="getVersion()">Version</button>
+<button onclick="logout()">Logout</button>
+<button onclick="login()">Login</button>
+<button onclick="loginWithRequirements()">Login with Requirements</button>
+<button onclick="updateIdentity()">Update Identity</button>
+<button onclick="authenticate()">Authenticate</button>
+<button onclick="authenticateSpecific()">Authenticate w/Params</button>
+<button onclick="hardwareCapableProofs()">Prove Ownership</button>
+<button onclick="addToken()">Add Token</button>
+<br>
+<br>
+<button onclick="hasAccountFor()">Has Account For Network</button>
+<button onclick="getPublicKey()">Get Public Key</button>
+<button onclick="linkAccount()">Link Account</button>
+<button onclick="suggestNetwork()">Suggest Network & Token</button>
+<br>
+<br>
+<button onclick="arbitrary()">Arbitrary Signature</button>
+<button onclick="unsignableArbitrary()">Unsignable Arbitrary</button>
+
+<br>
+<br>
+
+<h1>EOSIO</h1>
+
+<button onclick="transfer()">Transfer</button>
+<button onclick="transferWithFields()">Transfer with Fields</button>
+<button onclick="contract()">Contract</button>
+<button onclick="multi()">Multi Action Contract</button>
+<button onclick="donate()">Donate</button>
+
+<br>
+<br>
+
+<h1>Deep Link</h1>
+<p style="margin-top:-20px;">
+    Deep links will only work with a built version of Scatter, <br>
+    not a live development version.
+</p>
+
+<a href="scatter://transfer?payload=safetransfer/0/eos/aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906/ramdeathtest">
+    <button>Donate with Deep Link</button>
+</a>
+
+<script>
+
+	 ScatterJS.plugins( new ScatterEOS(), new ScatterLynx() );
+
+
+    const network2 = ScatterJS.Network.fromJson({
+        blockchain:'eos',
+        chainId:'e70aaab8997e1dfce58fbfac80cbbb8fecec7b99cf982a9444273cbc64c41473',
+        host:'jungle.eosmetal.io',
+        port:18888,
+        protocol:'http'
+    });
+
+
+   // const network = ScatterJS.Network.fromJson({
+   //     blockchain:'eos',
+   //     chainId:'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+   //     host:'nodes.get-scatter.com',
+   //     port:443,
+   //     protocol:'https'
+   // });
+
+   const network = ScatterJS.Network.fromJson({
+       blockchain:'eos',
+        chainId:'e70aaab8997e1dfce58fbfac80cbbb8fecec7b99cf982a9444273cbc64c41473',
+        host:'jungle.eosmetal.io',
+        port:18888,
+        protocol:'http'
+   });
+
+    let scatter, eos;
+
+    const setStatus = () => {
+    	const status = document.getElementById('status');
+    	if(!scatter) return status.innerText = 'No Scatter';
+    	if(!scatter.identity) return status.innerText = 'No Identity';
+    	status.innerText = scatter.identity.name;
+    };
+
+    setStatus();
+    setInterval(() => {
+	    setStatus();
+    }, 1000);
+
+    ScatterJS.connect('LernaVanillaTest', {network}).then(connected => {
+        if(!connected) return false;
+        scatter = ScatterJS.scatter;
+        eos = scatter.eos(network, Eos);
+
+        scatter.addEventHandler((event, payload) => {
+            console.log('app event', event, payload);
+        });
+    });
+
+    window.getVersion = async () => {
+        const version = await scatter.getVersion();
+        console.log('version', version);
+    };
+
+    window.login = async () => {
+        // await scatter.suggestNetwork(network);
+        await ScatterJS.login();
+        eos = scatter.eos(network, Eos);
+    };
+
+    window.loginWithRequirements = async () => {
+        await scatter.suggestNetwork(network);
+        await scatter.getIdentity({
+            personal:['firstname', 'lastname', 'email'],
+            location:['country', 'phone', 'address'],
+            accounts:[network2, network2]
+        })
+        eos = scatter.eos(network, Eos);
+    };
+
+    window.updateIdentity = async () => {
+        const done = await scatter.updateIdentity({
+            name:'HelloWorld',
+        })
+        console.log('done', done);
+    };
+
+    window.authenticate = async () => {
+    	const getRandom = () => Math.round(Math.random() * 8 + 1).toString();
+    	let randomString = '';
+    	for(let i = 0; i < 12; i++) randomString += getRandom();
+    	console.log('randomString', randomString);
+        await scatter.authenticate(randomString).then(res => console.log(res));
+    };
+
+    window.authenticateSpecific = async () => {
+    	const getRandom = () => Math.round(Math.random() * 8 + 1).toString();
+    	let nonce = '';
+    	for(let i = 0; i < 12; i++) nonce += getRandom();
+	    const account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
+
+	    // You can't use authenticate with Hardware Devices! Use the identity key in that instance.
+	    const publicKey = account.isHardware ? scatter.identity.publicKey : account.publicKey;
+
+	    const toSign = 'helloworldiamtheonethatknocks';
+        await scatter.authenticate(nonce, toSign, publicKey)
+            .then(res => {
+            	const {ecc} = Eos.modules;
+            	const shaData = ecc.sha256(
+		            ecc.sha256(toSign) +
+            		ecc.sha256(nonce)
+                );
+            	const recovered = ecc.recoverHash(res, shaData);
+            	console.log('recovered?', recovered === publicKey);
+            }).catch(err => {
+            	console.log('err', err);
+            })
+    };
+
+	 window.hardwareCapableProofs = async () => {
+		 const account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
+
+
+		 // We're going to catch a reference to the buffer
+		 let buffer;
+		 const signProvider = async buf => buffer = buf;
+
+		 // NOTICE WE ARE PUTTING THE signProvider HERE!!!!!
+		 const contract = await eos.contract('scatterproof', {signProvider});
+
+		 // NOTICE THE BROADCAST FALSE!!!!!!!!!!
+		 const opts = { broadcast:false, authorization:[`${account.name}@${account.authority}`] };
+
+		 const signed = await contract.prove(
+			 'now you can sign a sha256 (f0e4c2f76c58916ec258f246851bea091d14d4247a2fc3e18694461b1816e13b) or an EOS key: EOS5yhN6BBC42eLKxrNDXcQ4pbpmr3QBiroQBrEgZAVTufT3rgVXv from hardware devices',
+			 opts
+		 );
+
+		 const signature = signed.transaction.signatures[0];
+
+		 const {ecc} = Eos.modules;
+		 const recovered = ecc.recover(signature, buffer);
+		 console.log('recovered?', recovered === account.publicKey);
+	 }
+
+    window.logout = async () => {
+        await scatter.forgetIdentity();
+    };
+
+
+    window.addToken = async () => {
+
+    	const token = ScatterJS.Token.fromJson({
+		    blockchain:'eos',
+            contract:'ridlridlcoin',
+            symbol:'RIDL1',
+            decimals:4
+        })
+
+        await scatter.addToken(token);
+    };
+
+    window.transfer = async () => {
+	    const account = ScatterJS.account('eos');
+        const opts = { authorization:[`${account.name}@${account.authority}`], requiredFields:{} };
+        eos.transfer(account.name, 'eosio', '1.0000 EOS', '', opts).then(trx => {
+            console.log('trx', trx);
+        }).catch(err => {
+//            console.error(err);
+        })
+    };
+
+    window.transferWithFields = async () => {
+        const account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
+        const requiredFields = {
+        	personal:['firstname', 'lastname'],
+            location:['address']
+        };
+        const opts = { authorization:[`${account.name}@${account.authority}`], requiredFields };
+        eos.transfer(account.name, 'eosio', '1.0000 EOS', '', opts).then(trx => {
+            console.log('trx', trx);
+        }).catch(err => {
+//            console.error(err);
+        })
+    };
+
+    window.donate = () => {
+        const tokenDetails = {contract:'eosio.token', symbol:'EOS', memo:'', decimals:4};
+        // scatter.requestTransfer(network, 'eosio', 0, tokenDetails).then(res => console.log(res));
+        scatter.requestTransfer(network, 'eosio', '1.0000', tokenDetails).then(res => console.log(res));
+    };
+
+    window.contract = () => {
+        const account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
+        const opts = { authorization:[`${account.name}@${account.authority}`] };
+        eos.contract('eosio.token', {requiredFields:{}}).then(contract => {
+            contract.transfer(account.name, 'eosio', '1.0000 EOS', '', opts).then(trx => {
+                console.log('trx', trx);
+            }).catch(err => {
+                console.error(err);
+            })
+        })
+    }
+
+    window.multi = () => {
+        const account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
+        const opts = { authorization:[`${account.name}@${account.authority}`] };
+
+	    eos
+		    .transaction(tr => {
+			    tr.newaccount({
+				    creator: account.name,
+				    name: 'eosio',
+				    owner: account.publicKey,
+				    active: account.publicKey
+			    });
+			    tr.delegatebw(account.name, account.name, '1.0000 EOS', '1.0000 EOS', 0, opts);
+			    tr.transfer(account.name, 'eosio', '1.0000 EOS', '', opts);
+		    })
+		    .then(trx => {
+			    console.log(trx.transaction_id);
+		    })
+		    .catch(err => {
+			    console.log(err);
+		    });
+    };
+
+    window.suggestNetwork = async () => {
+	    await scatter.suggestNetwork(ScatterJS.Network.fromJson({
+		    blockchain:'eos',
+		    chainId:'1',
+		    host:'not-real.com',
+		    port:443,
+		    protocol:'https',
+            token:{
+                symbol:'SYS',
+                contract:'eosio.token'
+            }
+	    })).then(res => console.log(res));
+    }
+
+    window.arbitrary = () => {
+	    const account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
+        scatter.getArbitrarySignature(account.publicKey, 'This should be able to be signed by anything', 'Testing', false).then(signed => {
+        	console.log('signed', signed);
+        })
+    }
+
+    window.unsignableArbitrary = () => {
+	    const account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
+        scatter.getArbitrarySignature(account.publicKey, 'hello_world_im_too_long_yo', 'Testing', false);
+    }
+
+	 window.hasAccountFor = () => {
+		 scatter.hasAccountFor(network).then(res => {
+			 console.log('res', res);
+			 scatter.hasAccountFor({ host:'not-real.com', port:80, blockchain:'eos', chainId:'2' }).then(res => {
+				 console.log('should fail', res);
+			 }).catch(error => {
+				 console.log('should fail', error);
+			 });
+		 }).catch(error => {
+			 console.log('error', error)
+		 });
+
+	 }
+
+    let publicKey;
+    window.getPublicKey = () => {
+        scatter.getPublicKey('eos').then(res => {
+	        publicKey = res;
+            console.log('res', res);
+        }).catch(error => {
+        	console.log('error', error)
+        });
+    }
+
+    window.linkAccount = () => {
+
+    	const account = {
+    	    name:'hello',
+            authority:'active',
+            publicKey
+        };
+
+        scatter.linkAccount(account, network).then(res => {
+            console.log('res', res);
+        }).catch(error => {
+        	console.log('error', error)
+        });
+    }
+
+</script>
+</body>
+</html>
