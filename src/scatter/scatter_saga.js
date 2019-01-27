@@ -17,6 +17,13 @@ import {
     getWallet
 } from "./scatter_helper";
 
+import {
+    notifyError,
+    notifyInfo,
+    notifySuccess,
+    notifyWarning
+} from "../utils";
+
 const APP_NAME = 'React-Scatter';
 
 function* connectWithScatter(){
@@ -33,11 +40,17 @@ function* attemptAutoLoginWithScatter(){
         if(loginHistoryExists()){
             yield call(connect,APP_NAME);
             yield put(connectedScatter());
-            const {name, publicKey, authority} = yield call(login);
-            yield put(logInSuccess({name, publicKey, keyType: authority}));
+            try{
+                const {name, publicKey, authority} = yield call(login);
+                yield put(logInSuccess({name, publicKey, keyType: authority}));
+                notifySuccess(`Logged in as ${name}`, 1);
+            }catch (e) {
+                console.error(e)
+                notifyError('Scatter rejected login request !', 3);
+            }
         }
     }catch(e){
-        console.info("auto login failed", e)
+        notifyInfo('Please unlock Scatter !', 3);
     }
 }
 
@@ -49,11 +62,14 @@ function* loginWithScatter(){
         try{
             const {name, publicKey, authority} = yield call(login);
             yield put(logInSuccess({name, publicKey, keyType: authority}));
+            notifySuccess(`Logged in as ${name}`, 1);
         }catch(e){
             yield put(loginError());
+            notifyError('Scatter rejected login request !', 3);
         }
     }catch(e){
         yield put(connectionError());
+        notifyError('Please unlock Scatter !', 3);
     }
 }
 
@@ -63,6 +79,7 @@ function* fetchUserWallet(){
         yield put(setWallet(wallet));
     }catch(e){
         yield put(errorGettingWallet({message: e.message}));
+        notifyError('Error fetching wallet !', 3);
     }
 }
 

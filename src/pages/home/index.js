@@ -35,7 +35,6 @@ class Home extends Component{
 
     };
 
-
     loginUser = () => this.props.dispatch(requestLogin());
 
     static getDerivedStateFromProps(props){
