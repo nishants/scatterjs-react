@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {connect } from 'react-redux';
-import { Card, Col, Row } from 'antd';
+import { Card, Col, Row, Button } from 'antd';
 
 import {
     requestLogin,
@@ -14,6 +14,7 @@ import {
 
 import UserWallet from "../../components/user_wallet";
 import SendTokens from "../../components/send_tokens";
+import UserAccount from "../../components/user_account";
 
 class Home extends Component{
     constructor(props){
@@ -68,22 +69,22 @@ class Home extends Component{
 
         return (
             <div id="homepage"><>
-                <label>{`Conenected with scatter : `}</label>
-                <br/>
-                {loggedIn || <label><a href="/#" onClick={loginUser}>Log in</a></label>}
-                <br/>
-                {loggedIn && <>
-                    <label><a href="/#" onClick={logOutUser}>Log out</a></label>
-                    <div>
-                        <label>Account name : </label>
-                        <span>{userAccount.name}</span>
-                    </div>
-                    <div>
-                        <label>Public key : </label>
-                        <span>[{userAccount.keyType}] {userAccount.publicKey} </span>
-                    </div>
+                <Row>
+                    <Col span={24}>
+                        <Card style={{margin: "10px"}} bordered={true}>
+                            {loggedIn ? <Button htmlType="button" onClick={logOutUser}>Log out</Button> : <Button htmlType="button" onClick={loginUser}>Log in</Button>}
+                        </Card>
+                    </Col>
+                </Row>
 
+                {loggedIn && <>
                     <Row>
+                        <Col span={24}>
+                            <Card title="Account" style={{margin: "10px"}} bordered={true}>
+                                <UserAccount userAccount={userAccount}/>
+                            </Card>
+                        </Col>
+
                         <Col span={12}>
                             <Card title="Wallet" style={{margin: "10px"}} bordered={true}>
                                 {userWallet ? <UserWallet wallet={userWallet}/> : <div> Loading wallet </div>}
