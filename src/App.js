@@ -1,8 +1,19 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
+
 import Home from './pages/home'
+import {attemptAutoLogin} from './components/scatter/scatter_actions'
 
-const App = () => (
-    <Home/>
-);
+class App extends Component{
+    componentDidMount() {
+        this.props.dispatch(attemptAutoLogin());
+    }
 
-export default App;
+    render(){
+        return (
+            <Home/>
+        );
+    }
+}
+
+export default connect()(App);

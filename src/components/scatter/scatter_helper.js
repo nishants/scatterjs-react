@@ -21,6 +21,9 @@ const network = {
     protocol:'http'
 };
 
+export const loginHistoryExists = () => !!localStorage.getItem("lastLoginAt");
+const setLoginHistory    = () => localStorage.setItem("lastLoginAt", new Date().getTime());
+
 export const connect = appName => (new Promise((resolve, reject)=> {
     ScatterJS.scatter.connect(appName).then(connected => {
         const
@@ -45,6 +48,7 @@ export const login = ()=> {
         // Set expiration time for eos connection, can have more options
         const eosOptions = { expireInSeconds: 60 };
         userEosConnection = scatter.eos(network, Eos, eosOptions);
+        setLoginHistory();
         return {
             name: userAccount.name,
             authority: userAccount.authority,

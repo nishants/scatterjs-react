@@ -83,13 +83,10 @@ class Home extends Component{
     };
 
     render(){
-        const {connected: scatterConnected} = this.props.scatter;
+        const {connected: scatterConnected, userAccount, loggedIn} = this.props.scatter;
 
         const {
             connectingScatter,
-
-            loggedIn,
-            userAccount,
             userWallet
         } = this.state;
 
@@ -133,7 +130,7 @@ class Home extends Component{
 
 const mapStateToProps = ({scatter}) => {
     return {
-        scatter
+        scatter,
     };
 };
 

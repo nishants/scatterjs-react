@@ -3,9 +3,15 @@ import {takeLatest, put, call} from 'redux-saga/effects';
 import {
     SCATTER_ACTIONS,
     connectedScatter,
-    connectionError} from './scatter_actions';
+    connectionError,
+    logInSuccess,
+} from './scatter_actions';
 
-import {connect} from "./scatter_helper";
+import {
+    connect,
+    login,
+    loginHistoryExists
+} from "./scatter_helper";
 
 const APP_NAME = 'React-Scatter';
 
@@ -18,6 +24,20 @@ function* connectWithScatter(){
     }
 }
 
+function* attemptAutoLoginWithScatter(){
+    try{
+        if(loginHistoryExists()){
+            yield call(connect,APP_NAME);
+            yield put(connectedScatter());
+            const {name, publicKey, authority} = yield call(login);
+            yield put(logInSuccess({name, publicKey, keyType: authority}));
+        }
+    }catch(e){
+        console.info("auto login failed", e)
+    }
+}
+
 export default function*  missionsSagas(){
     yield takeLatest(SCATTER_ACTIONS.CONNECT, connectWithScatter);
+    yield takeLatest(SCATTER_ACTIONS.ATTEMPT_AUTO_LOGIN, attemptAutoLoginWithScatter);
 }
