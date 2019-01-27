@@ -3,7 +3,8 @@ import {connect } from 'react-redux';
 
 import {
     requestLogin,
-    getWallet
+    getWallet,
+    logout
 } from '../../scatter/scatter_actions';
 
 import {
@@ -53,21 +54,25 @@ class Home extends Component{
         }).catch(error => console.log(error.message));
     };
 
+    logOutUser = ()=> this.props.dispatch(logout());
+
     render(){
         const { userAccount, loggedIn, userWallet} = this.props.scatter;
 
         const {
             loginUser,
             sendTokens,
+            logOutUser
         } = this;
 
         return (
             <div id="homepage"><>
                 <label>{`Conenected with scatter : `}</label>
                 <br/>
-                <label><a href="/#" onClick={loginUser}>Log in</a></label>
+                {loggedIn || <label><a href="/#" onClick={loginUser}>Log in</a></label>}
                 <br/>
                 {loggedIn && <>
+                    <label><a href="/#" onClick={logOutUser}>Log out</a></label>
                     <div>
                         <label>Account name : </label>
                         <span>{userAccount.name}</span>

@@ -58,6 +58,8 @@ export const login = ()=> {
     });
 };
 
+export const logout = () => scatter.logout();
+
 export const sendTokens = ({toAccount, amount, memo}) => {
     const transactionOptions = { authorization:[`${userAccount.name}@${userAccount.authority}`] };
     return userEosConnection.transfer(

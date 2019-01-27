@@ -7,21 +7,22 @@ import {
     connectionError,
     loginError,
     setWallet,
-    errorGettingWallet
+    errorGettingWallet,
+    loggedOut
 } from './scatter_actions';
 
 import {
     connect,
     login,
     loginHistoryExists,
-    getWallet
+    getWallet,
+    logout
 } from "./scatter_helper";
 
 import {
     notifyError,
     notifyInfo,
-    notifySuccess,
-    notifyWarning
+    notifySuccess
 } from "../utils";
 
 const APP_NAME = 'React-Scatter';
@@ -83,9 +84,16 @@ function* fetchUserWallet(){
     }
 }
 
+function* logOutUser(){
+    yield call(logout);
+    yield put(loggedOut());
+    notifyInfo('Logged out !', 3);
+}
+
 export default function*  missionsSagas(){
     yield takeLatest(SCATTER_ACTIONS.CONNECT, connectWithScatter);
     yield takeLatest(SCATTER_ACTIONS.ATTEMPT_AUTO_LOGIN, attemptAutoLoginWithScatter);
     yield takeLatest(SCATTER_ACTIONS.LOGIN, loginWithScatter);
     yield takeLatest(SCATTER_ACTIONS.GET_WALLET, fetchUserWallet);
+    yield takeLatest(SCATTER_ACTIONS.LOG_OUT, logOutUser);
 }

@@ -37,8 +37,10 @@ const reducer = (state = INITIAL_STATE, action) => {
             return {...state, fetchingWallet: false, walletError: null, userWallet: action.payload};
 
         case SCATTER_ACTIONS.GET_WALLET_ERROR:
-            console.log("GET_WALLET_ERROR", action )
             return {...state, fetchingWallet: false, walletError: action.payload.message};
+
+        case SCATTER_ACTIONS.LOGGED_OUT:
+            return {...state, loggedIn: false, loginFailed: false, userAccount: null, userWallet: null, walletError: null, fetchingWallet: false};
 
         default:
             return state;
