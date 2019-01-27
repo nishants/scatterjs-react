@@ -9,7 +9,10 @@ const INITIAL_STATE = {
     requestedLogIn  : false,
     loginFailed     : false,
 
-    userAccount     : null
+    userAccount     : null,
+    userWallet      : null,
+    fetchingWallet  : false,
+    walletError     : null
 };
 
 const reducer = (state = INITIAL_STATE, action) => {
@@ -26,6 +29,16 @@ const reducer = (state = INITIAL_STATE, action) => {
 
         case SCATTER_ACTIONS.LOGGED_IN:
             return {...state, loggedIn: true, loginFailed: false, userAccount: action.payload};
+
+        case SCATTER_ACTIONS.GET_WALLET:
+            return {...state, fetchingWallet: true, walletError: null};
+
+        case SCATTER_ACTIONS.SET_WALLET:
+            return {...state, fetchingWallet: false, walletError: null, userWallet: action.payload};
+
+        case SCATTER_ACTIONS.GET_WALLET_ERROR:
+            console.log("GET_WALLET_ERROR", action )
+            return {...state, fetchingWallet: false, walletError: action.payload.message};
 
         default:
             return state;

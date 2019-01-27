@@ -5,13 +5,16 @@ import {
     connectedScatter,
     logInSuccess,
     connectionError,
-    loginError
+    loginError,
+    setWallet,
+    errorGettingWallet
 } from './scatter_actions';
 
 import {
     connect,
     login,
-    loginHistoryExists
+    loginHistoryExists,
+    getWallet
 } from "./scatter_helper";
 
 const APP_NAME = 'React-Scatter';
@@ -54,8 +57,18 @@ function* loginWithScatter(){
     }
 }
 
+function* fetchUserWallet(){
+    try{
+        const wallet = yield call(getWallet);
+        yield put(setWallet(wallet));
+    }catch(e){
+        yield put(errorGettingWallet({message: e.message}));
+    }
+}
+
 export default function*  missionsSagas(){
     yield takeLatest(SCATTER_ACTIONS.CONNECT, connectWithScatter);
     yield takeLatest(SCATTER_ACTIONS.ATTEMPT_AUTO_LOGIN, attemptAutoLoginWithScatter);
     yield takeLatest(SCATTER_ACTIONS.LOGIN, loginWithScatter);
+    yield takeLatest(SCATTER_ACTIONS.GET_WALLET, fetchUserWallet);
 }

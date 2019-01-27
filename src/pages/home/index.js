@@ -3,11 +3,11 @@ import {connect } from 'react-redux';
 
 import {
     requestLogin,
+    getWallet
 } from '../../components/scatter/scatter_actions';
 
 import {
     sendTokens,
-    getWallet
 } from '../../components/scatter/scatter_helper';
 
 class Home extends Component{
@@ -35,6 +35,15 @@ class Home extends Component{
 
     loginUser = () => this.props.dispatch(requestLogin());
 
+    static getDerivedStateFromProps(props){
+        const
+            hasWalletOrError = props.scatter.userWallet || props.scatter.walletError,
+            fetchWallet = props.scatter.loggedIn && !(hasWalletOrError || props.scatter.fetchingWallet);
+
+        fetchWallet && props.dispatch(getWallet());
+        return null;
+    }
+
     sendTokens = () => {
         this.setState({requestedTransaction: true});
         sendTokens({
@@ -46,18 +55,8 @@ class Home extends Component{
         }).catch(error => console.log(error.message));
     };
 
-    getWallet = () => {
-        getWallet().then(userWallet => {
-            this.setState({userWallet})
-        }).catch(error => console.error(error));
-    };
-
     render(){
-        const { userAccount, loggedIn} = this.props.scatter;
-
-        const {
-            userWallet
-        } = this.state;
+        const { userAccount, loggedIn, userWallet} = this.props.scatter;
 
         const {
             loginUser,
