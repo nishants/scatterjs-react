@@ -86,7 +86,7 @@ class Home extends Component{
                     <Row>
                         <Col span={12}>
                             <Card title="Wallet" style={{margin: "10px"}} bordered={true}>
-                                <UserWallet wallet={userWallet}/>
+                                {userWallet ? <UserWallet wallet={userWallet}/> : <div> Loading wallet </div>}
                             </Card>
                         </Col>
 
