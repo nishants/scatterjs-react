@@ -4,13 +4,10 @@ import { Card, Col, Row, Button } from 'antd';
 
 import {
     requestLogin,
-    getWallet,
-    logout
+    fetchWallet,
+    logout,
+    sendTokens
 } from '../../scatter/scatter_actions';
-
-import {
-    sendTokens,
-} from '../../scatter/scatter_helper';
 
 import UserWallet from "../../components/user_wallet";
 import SendTokens from "../../components/send_tokens";
@@ -43,17 +40,14 @@ class Home extends Component{
     static getDerivedStateFromProps(props){
         const
             hasWalletOrError = props.scatter.userWallet || props.scatter.walletError,
-            fetchWallet = props.scatter.loggedIn && !(hasWalletOrError || props.scatter.fetchingWallet);
+            shouldFetchWallet = props.scatter.loggedIn && !(hasWalletOrError || props.scatter.fetchingWallet);
 
-        fetchWallet && props.dispatch(getWallet());
+        shouldFetchWallet && props.dispatch(fetchWallet());
         return null;
     }
 
     sendTokens = ({toAccount,amount,memo}) => {
-        this.setState({requestedTransaction: true});
-        sendTokens({toAccount,amount,memo}).then(() => {
-            this.setState({requestedTransaction: false});
-        }).catch(error => console.log(error.message));
+        this.props.dispatch(sendTokens({toAccount,amount,memo}))
     };
 
     logOutUser = ()=> this.props.dispatch(logout());

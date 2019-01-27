@@ -17,6 +17,8 @@ export const SCATTER_ACTIONS = {
     GET_WALLET_ERROR: 'SCATTER/GET_WALLET_ERROR',
 
     SEND_TOKEN: 'SCATTER/SEND_TOKEN',
+    SEND_TOKEN_SUCCESS: 'SCATTER/SEND_TOKEN_SUCCESS',
+
     AUTH_ERROR: 'SCATTER/ERRORS/AUTH_ERROR',
     SEND_TOKEN_ERROR: 'SCATTER/ERRORS/SEND_TOKEN_ERROR',
 };
@@ -34,7 +36,10 @@ export const logInSuccess      = payload => ({type: SCATTER_ACTIONS.LOGGED_IN, p
 export const requestLogin      = () => ({type: SCATTER_ACTIONS.LOGIN});
 export const loginError        = () => ({type: SCATTER_ACTIONS.LOGIN_ERROR});
 
-export const getWallet         = () => ({type: SCATTER_ACTIONS.GET_WALLET});
+export const fetchWallet       = () => ({type: SCATTER_ACTIONS.GET_WALLET});
 export const errorGettingWallet= payload => ({type: SCATTER_ACTIONS.GET_WALLET_ERROR, payload});
 export const setWallet         = payload => ({type: SCATTER_ACTIONS.SET_WALLET, payload});
+
+export const sendTokens        = payload => ({type: SCATTER_ACTIONS.SEND_TOKEN, payload});
+export const tokenTransferred   = () => ({type: SCATTER_ACTIONS.SEND_TOKEN_SUCCESS});
 

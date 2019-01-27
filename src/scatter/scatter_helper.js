@@ -70,8 +70,6 @@ export const sendTokens = ({toAccount, amount, memo}) => {
         transactionOptions
     ).then(trx => {
         return trx.transaction_id;
-    }).catch(error => {
-        console.error(error);
     });
 };
 

@@ -8,7 +8,9 @@ import {
     loginError,
     setWallet,
     errorGettingWallet,
-    loggedOut
+    loggedOut,
+    tokenTransferred,
+    fetchWallet
 } from './scatter_actions';
 
 import {
@@ -16,7 +18,8 @@ import {
     login,
     loginHistoryExists,
     getWallet,
-    logout
+    logout,
+    sendTokens
 } from "./scatter_helper";
 
 import {
@@ -90,10 +93,22 @@ function* logOutUser(){
     notifyInfo('Logged out !', 3);
 }
 
+function* transferTokens(action){
+    try {
+        yield call(sendTokens, action.payload);
+        yield put(tokenTransferred());
+        notifySuccess('Successfully transferred tokens', 3);
+        yield put(fetchWallet());
+    } catch (e) {
+        notifyError(e.message, 5);
+    }
+}
+
 export default function*  missionsSagas(){
     yield takeLatest(SCATTER_ACTIONS.CONNECT, connectWithScatter);
     yield takeLatest(SCATTER_ACTIONS.ATTEMPT_AUTO_LOGIN, attemptAutoLoginWithScatter);
     yield takeLatest(SCATTER_ACTIONS.LOGIN, loginWithScatter);
     yield takeLatest(SCATTER_ACTIONS.GET_WALLET, fetchUserWallet);
     yield takeLatest(SCATTER_ACTIONS.LOG_OUT, logOutUser);
+    yield takeLatest(SCATTER_ACTIONS.SEND_TOKEN, transferTokens);
 }

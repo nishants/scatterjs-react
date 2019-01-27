@@ -12,7 +12,9 @@ const INITIAL_STATE = {
     userAccount     : null,
     userWallet      : null,
     fetchingWallet  : false,
-    walletError     : null
+    walletError     : null,
+
+    sendingTokens   : false
 };
 
 const reducer = (state = INITIAL_STATE, action) => {
@@ -41,6 +43,12 @@ const reducer = (state = INITIAL_STATE, action) => {
 
         case SCATTER_ACTIONS.LOGGED_OUT:
             return {...state, loggedIn: false, loginFailed: false, userAccount: null, userWallet: null, walletError: null, fetchingWallet: false};
+
+        case SCATTER_ACTIONS.SEND_TOKEN:
+            return {...state, sendingTokens: true};
+
+        case SCATTER_ACTIONS.SEND_TOKEN_SUCCESS:
+            return {...state, sendingTokens: false};
 
         default:
             return state;
