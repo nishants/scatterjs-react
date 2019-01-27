@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {connect } from 'react-redux';
+import { Card, Col, Row } from 'antd';
 
 import {
     requestLogin,
@@ -81,8 +82,21 @@ class Home extends Component{
                         <label>Public key : </label>
                         <span>[{userAccount.keyType}] {userAccount.publicKey} </span>
                     </div>
-                    <UserWallet wallet={userWallet}/>
-                    <SendTokens onSend={sendTokens}/>
+
+                    <Row>
+                        <Col span={12}>
+                            <Card title="Wallet" style={{margin: "10px"}} bordered={true}>
+                                <UserWallet wallet={userWallet}/>
+                            </Card>
+                        </Col>
+
+                        <Col span={12}>
+                            <Card title="Transfer tokens" bordered={true} style={{margin: "10px"}}>
+                                <SendTokens onSend={sendTokens}/>
+                            </Card>
+                        </Col>
+                    </Row>
+
                 </>}
             </></div>
         );

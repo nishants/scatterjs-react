@@ -1,4 +1,10 @@
 import React, {Component} from 'react';
+import './send-tokens.scss';
+import {
+    Form, Input, Button,
+} from 'antd';
+
+const FormItem = Form.Item;
 
 class SendTokens extends Component {
     constructor(props) {
@@ -11,7 +17,6 @@ class SendTokens extends Component {
     }
 
     inputChangeHandler = (e) => {
-        console.log(e.target);
         this.setState({[e.target.name]: e.target.value})
     };
 
@@ -25,12 +30,21 @@ class SendTokens extends Component {
         const {toAccount, amount, memo} = this.state;
         const {submitForm} = this;
         return (
-            <form onSubmit={submitForm}>
-                <input name="toAccount" value={toAccount} placeholder="toAccount" onChange={this.inputChangeHandler}/>
-                <input type="number" name="amount" placeholder="amount"value={amount} onChange={this.inputChangeHandler}/>
-                <input name="memo" value={memo} placeholder="memo" onChange={this.inputChangeHandler}/>
-                <button >Send Tokens</button>
-            </form>
+            <Form onSubmit={submitForm}>
+                <FormItem>
+                    <Input
+                        name="toAccount" value={toAccount} placeholder="receiver account" onChange={this.inputChangeHandler}/>
+                </FormItem>
+                <FormItem>
+                    <Input type="number" name="amount" placeholder="amount EOS"value={amount} onChange={this.inputChangeHandler}/>
+                </FormItem>
+                <FormItem>
+                    <Input name="memo" value={memo} placeholder="memo" onChange={this.inputChangeHandler}/>
+                </FormItem>
+                <FormItem>
+                    <Button htmlType="submit">Send Tokens</Button>
+                </FormItem>
+            </Form>
         );
     }
 
