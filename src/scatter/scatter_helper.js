@@ -3,7 +3,8 @@ import ScatterEOS from 'scatterjs-plugin-eosjs';
 import Eos from 'eosjs';
 
 import {
-    parseEOS
+    parseEOS,
+    toEOSString
 } from '../utils';
 
 let
@@ -62,7 +63,7 @@ export const sendTokens = ({toAccount, amount, memo}) => {
     return userEosConnection.transfer(
         userAccount.name,
         toAccount,
-        amount,
+        toEOSString(amount),
         memo,
         transactionOptions
     ).then(trx => {
