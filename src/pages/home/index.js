@@ -4,11 +4,11 @@ import {connect } from 'react-redux';
 import {
     requestLogin,
     getWallet
-} from '../../components/scatter/scatter_actions';
+} from '../../scatter/scatter_actions';
 
 import {
     sendTokens,
-} from '../../components/scatter/scatter_helper';
+} from '../../scatter/scatter_helper';
 
 import UserWallet from "../../components/user_wallet";
 

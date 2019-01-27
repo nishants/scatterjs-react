@@ -4,7 +4,7 @@ import Eos from 'eosjs';
 
 import {
     parseEOS
-} from '../../utils';
+} from '../utils';
 
 let
     scatter = null,

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 
 import Home from './pages/home'
-import {attemptAutoLogin} from './components/scatter/scatter_actions'
+import {attemptAutoLogin} from './scatter/scatter_actions'
 
 class App extends Component{
     componentDidMount() {
