@@ -1,0 +1,83 @@
+{
+  "account_name": "lioninjungle",
+  "head_block_num": 10776167,
+  "head_block_time": "2019-01-26T18:22:33.000",
+  "privileged": false,
+  "last_code_update": "1970-01-01T00:00:00.000",
+  "created": "2018-11-23T17:08:56.500",
+  "core_liquid_balance": "401910053.4102 EOS",
+  "ram_quota": 4058629,
+  "net_weight": "750100005000",
+  "cpu_weight": "760000005000",
+  "net_limit": {
+    "used": 105,
+    "available": "20477424837211",
+    "max": "20477424837316"
+  },
+  "cpu_limit": {
+    "used": 2729,
+    "available": "3701716619784",
+    "max": "3701716622513"
+  },
+  "ram_usage": 4382,
+  "permissions": [
+    {
+      "perm_name": "active",
+      "parent": "owner",
+      "required_auth": {
+        "threshold": 1,
+        "keys": [
+          {
+            "key": "EOS5BcLionmbgEtcmu7qY6XKWaE1q31qCQSsd89zXij7FDXQnKjwk",
+            "weight": 1
+          }
+        ],
+        "accounts": [],
+        "waits": []
+      }
+    },
+    {
+      "perm_name": "owner",
+      "parent": "",
+      "required_auth": {
+        "threshold": 1,
+        "keys": [
+          {
+            "key": "EOS5BcLionmbgEtcmu7qY6XKWaE1q31qCQSsd89zXij7FDXQnKjwk",
+            "weight": 1
+          }
+        ],
+        "accounts": [],
+        "waits": []
+      }
+    }
+  ],
+  "total_resources": {
+    "owner": "lioninjungle",
+    "net_weight": "75010000.5000 EOS",
+    "cpu_weight": "76000000.5000 EOS",
+    "ram_bytes": 4057229
+  },
+  "self_delegated_bandwidth": {
+    "from": "lioninjungle",
+    "to": "lioninjungle",
+    "net_weight": "75010000.0000 EOS",
+    "cpu_weight": "76000000.0000 EOS"
+  },
+  "refund_request": null,
+  "voter_info": {
+    "owner": "lioninjungle",
+    "proxy": "",
+    "producers": [
+      "lioninjungle"
+    ],
+    "staked": "1510100000000",
+    "last_vote_weight": "835087107146348928.00000000000000000",
+    "proxied_vote_weight": "0.00000000000000000",
+    "is_proxy": 0,
+    "reserved1": 0,
+    "reserved2": 0,
+    "reserved3": "0.0000 EOS"
+  },
+  "returnedFields": null
+}
