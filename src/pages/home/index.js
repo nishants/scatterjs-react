@@ -10,6 +10,8 @@ import {
     sendTokens,
 } from '../../components/scatter/scatter_helper';
 
+import UserWallet from "../../components/user_wallet";
+
 class Home extends Component{
     constructor(props){
         super(props);
@@ -78,7 +80,7 @@ class Home extends Component{
                         <label>Public key : </label>
                         <span>[{userAccount.keyType}] {userAccount.publicKey} </span>
                     </div>
-                    <p>{JSON.stringify(userWallet)}</p>
+                    <UserWallet wallet={userWallet}/>
                 </>}
                 <br/>
                 <button onClick={sendTokens}>Send Tokens</button>
