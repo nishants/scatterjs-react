@@ -23,4 +23,6 @@ export const connectedScatter  = () => ({type: SCATTER_ACTIONS.CONNECTED});
 export const connectionError   = () => ({type: SCATTER_ACTIONS.CONNECTION_ERROR});
 
 export const logInSuccess      = payload => ({type: SCATTER_ACTIONS.LOGGED_IN, payload});
+export const requestLogin      = () => ({type: SCATTER_ACTIONS.LOGIN});
+export const loginError        = () => ({type: SCATTER_ACTIONS.LOGIN_ERROR});
 

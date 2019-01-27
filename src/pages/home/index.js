@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import {connect } from 'react-redux';
 
 import {
-    connectScatter
+    requestLogin,
 } from '../../components/scatter/scatter_actions';
 
 import {
-    login,
     sendTokens,
     getWallet
 } from '../../components/scatter/scatter_helper';
@@ -33,37 +32,8 @@ class Home extends Component{
 
     };
 
-    logout = () => {
-        // this.setState({loggedIn: false});
-    };
 
-    componentDidMount() {
-        // this.connectWithScatter().then(this.loginUser);
-    }
-
-    connectWithScatter = () => {
-        this.props.dispatch(connectScatter());
-
-        // this.setState({connectingScatter: true});
-        // return connect('React-Scatter').then(() => {
-        //     this.setState({
-        //         connectingScatter: false,
-        //         scatterConnected: true
-        //     });
-        // }).catch(error => alert(error.message));
-    };
-
-    loginUser = () => {
-        this.setState({requestedAuth: true});
-        login().then(({name, publicKey, authority}) => {
-            this.setState({
-                requestedAuth: false,
-                loggedIn: true,
-                userAccount: {name, publicKey, keyType: authority,}
-            });
-            this.getWallet();
-        }).catch(error => alert(error.message));
-    };
+    loginUser = () => this.props.dispatch(requestLogin());
 
     sendTokens = () => {
         this.setState({requestedTransaction: true});
@@ -83,47 +53,37 @@ class Home extends Component{
     };
 
     render(){
-        const {connected: scatterConnected, userAccount, loggedIn} = this.props.scatter;
+        const { userAccount, loggedIn} = this.props.scatter;
 
         const {
-            connectingScatter,
             userWallet
         } = this.state;
 
         const {
-            connectWithScatter,
             loginUser,
             sendTokens,
-            logout
         } = this;
 
         return (
-            <div id="homepage">
-                {scatterConnected || <a href="#" onClick={connectWithScatter}>Connect to scatter</a>}
-                {scatterConnected && <>
-                    <label>{`Conenected with scatter : `}</label>
-                    <br/>
-                    <label><a href="#" onClick={loginUser}>Log in</a></label>
-                    <br/>
-                    {loggedIn && <>
-                        <div>
-                            <label>Account name : </label>
-                            <span>{userAccount.name}</span>
-                        </div>
-                        <div>
-                            <label>Public key : </label>
-                            <span>[{userAccount.keyType}] {userAccount.publicKey} </span>
-                        </div>
-                        <p>{JSON.stringify(userWallet)}</p>
-                    </>}
-                    <br/>
-                    <button onClick={sendTokens}>Send Tokens</button>
+            <div id="homepage"><>
+                <label>{`Conenected with scatter : `}</label>
+                <br/>
+                <label><a href="/#" onClick={loginUser}>Log in</a></label>
+                <br/>
+                {loggedIn && <>
+                    <div>
+                        <label>Account name : </label>
+                        <span>{userAccount.name}</span>
+                    </div>
+                    <div>
+                        <label>Public key : </label>
+                        <span>[{userAccount.keyType}] {userAccount.publicKey} </span>
+                    </div>
+                    <p>{JSON.stringify(userWallet)}</p>
                 </>}
-
-                <p>
-
-                </p>
-            </div>
+                <br/>
+                <button onClick={sendTokens}>Send Tokens</button>
+            </></div>
         );
     }
 }
