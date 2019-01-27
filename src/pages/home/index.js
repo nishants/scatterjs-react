@@ -11,6 +11,7 @@ import {
 } from '../../scatter/scatter_helper';
 
 import UserWallet from "../../components/user_wallet";
+import SendTokens from "../../components/send_tokens";
 
 class Home extends Component{
     constructor(props){
@@ -46,13 +47,9 @@ class Home extends Component{
         return null;
     }
 
-    sendTokens = () => {
+    sendTokens = ({toAccount,amount,memo}) => {
         this.setState({requestedTransaction: true});
-        sendTokens({
-            toAccount :'lioninjungle',
-            amount : '1.0000 EOS',
-            memo: 'sending tokens for fun'
-        }).then(() => {
+        sendTokens({toAccount,amount,memo}).then(() => {
             this.setState({requestedTransaction: false});
         }).catch(error => console.log(error.message));
     };
@@ -81,9 +78,8 @@ class Home extends Component{
                         <span>[{userAccount.keyType}] {userAccount.publicKey} </span>
                     </div>
                     <UserWallet wallet={userWallet}/>
+                    <SendTokens onSend={sendTokens}/>
                 </>}
-                <br/>
-                <button onClick={sendTokens}>Send Tokens</button>
             </></div>
         );
     }
